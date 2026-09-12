@@ -1,0 +1,16 @@
+@prefix obo:      <http://purl.obolibrary.org/obo/> .
+@prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+
+obo:UBERON_0001374 a owl:Class ;
+    rdfs:label "biceps femoris" ;
+    obo:IAO_0000115 "A hamstring muscle of the posterior thigh with a long and a short head." ;
+    oboInOwl:hasExactSynonym "musculus biceps femoris" ;
+    oboInOwl:hasDbXref "FMA:22356" ;
+    oboInOwl:hasDbXref "Wikipedia:Biceps_femoris_muscle" .
+
+obo:UBERON_0001111 a owl:Class ;
+    rdfs:label "trapezius muscle" ;
+    obo:IAO_0000115 "A large superficial muscle of the upper back and neck." ;
+    oboInOwl:hasDbXref "FMA:9626" .

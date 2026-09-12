@@ -1,0 +1,13 @@
+# Authored functional relations (design doc §5). Pairs are symmetric.
+antagonist_of:
+  - ["FMA:37670", "FMA:37688"]   # biceps brachii <-> triceps brachii
+  - ["FMA:22430", "FMA:22356"]   # rectus femoris <-> biceps femoris
+  - ["FMA:22541", "FMA:22532"]   # gastrocnemius <-> tibialis anterior
+  - ["FMA:9627",  "FMA:13379"]   # pectoralis major <-> rhomboid major
+  - ["FMA:22314", "FMA:18060"]   # gluteus maximus <-> psoas major
+synergist_of:
+  - ["FMA:22356", "FMA:22357"]   # biceps femoris ~ semitendinosus
+  - ["FMA:22357", "FMA:22438"]   # semitendinosus ~ semimembranosus
+  - ["FMA:22315", "FMA:22317"]   # gluteus medius ~ gluteus minimus
+  - ["FMA:22541", "FMA:22542"]   # gastrocnemius ~ soleus
+  - ["FMA:18060", "FMA:22310"]   # psoas major ~ iliacus

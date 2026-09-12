@@ -1,0 +1,6 @@
+# joint FMA ID: [bone A, bone B]. Used to turn "origin on A, insertion on B" into crosses_joint.
+"FMA:35178": ["FMA:16585", "FMA:24474"]   # hip joint: hip bone, femur
+"FMA:35175": ["FMA:24474", "FMA:24477"]   # knee joint: femur, tibia
+"FMA:35290": ["FMA:24477", "FMA:24479"]   # ankle joint: tibia, talus
+"FMA:25912": ["FMA:13394", "FMA:23130"]   # glenohumeral joint: scapula, humerus
+"FMA:35289": ["FMA:23130", "FMA:23466"]   # elbow joint: humerus, ulna

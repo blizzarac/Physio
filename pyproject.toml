@@ -1,0 +1,46 @@
+[project]
+name = "anatomy-explorer"
+version = "0.1.0"
+description = "Self-hosted 3D musculoskeletal explorer: anatomy, exercises, pain patterns, mobilization"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6",
+    "rdflib>=7",
+    "trimesh>=4.4",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "httpx>=0.27",
+    "watchfiles>=0.22",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+mesh = ["fast-simplification>=0.1.9", "pygltflib>=1.16"]
+
+[project.scripts]
+anatomy-build = "pipeline.cli:main"
+anatomy-api = "api.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pipeline", "api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]

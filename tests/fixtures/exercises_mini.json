@@ -1,0 +1,28 @@
+[
+  {
+    "id": "Romanian_Deadlift",
+    "name": "Romanian Deadlift",
+    "force": "pull",
+    "level": "intermediate",
+    "mechanic": "compound",
+    "equipment": "barbell",
+    "primaryMuscles": ["hamstrings"],
+    "secondaryMuscles": ["glutes", "lower back"],
+    "instructions": ["Hold a barbell at hip level.", "Hinge at the hips keeping the back flat."],
+    "category": "strength",
+    "images": ["Romanian_Deadlift/0.jpg", "Romanian_Deadlift/1.jpg"]
+  },
+  {
+    "id": "Upper_Trapezius_Stretch",
+    "name": "Upper Trapezius Stretch",
+    "force": "static",
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": ["traps"],
+    "secondaryMuscles": [],
+    "instructions": ["Tilt the head toward one shoulder."],
+    "category": "stretching",
+    "images": []
+  }
+]

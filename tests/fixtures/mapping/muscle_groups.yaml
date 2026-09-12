@@ -1,0 +1,11 @@
+hamstrings:
+  - { id: "FMA:22356", expect_name: "biceps femoris" }
+  - { id: "FMA:22357", expect_name: "semitendinosus" }
+  - { id: "FMA:22358", expect_name: "semimembranosus" }
+glutes:
+  - { id: "FMA:22314", expect_name: "gluteus maximus" }
+  - { id: "FMA:22315", expect_name: "gluteus medius" }
+lower back:
+  - { id: "FMA:22315", expect_name: "gluteus medius" }
+traps:
+  - { id: "FMA:9626", expect_name: "trapezius" }

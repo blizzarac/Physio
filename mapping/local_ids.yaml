@@ -1,0 +1,7 @@
+# Structures with no FMA entry (rare in the MSK domain). Keys are `ax:` IDs.
+# Example:
+# "ax:thoracolumbar-fascia-superficial-layer":
+#   type: fascia
+#   name: "Superficial layer of thoracolumbar fascia"
+#   synonyms: []
+{}
