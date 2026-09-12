@@ -1,0 +1,63 @@
+@prefix fma:  <http://purl.org/sig/ont/fma/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# --- MSK roots -------------------------------------------------------------
+fma:fma5022 a owl:Class ; fma:preferred_name "Muscle organ" .
+fma:fma5018 a owl:Class ; fma:preferred_name "Bone organ" .
+fma:fma7490 a owl:Class ; fma:preferred_name "Joint" .
+
+# --- intermediate classes ---------------------------------------------------
+fma:fma9001 a owl:Class ; fma:preferred_name "Muscle of lower limb" ; rdfs:subClassOf fma:fma5022 .
+fma:fma9002 a owl:Class ; fma:preferred_name "Muscle of neck" ; rdfs:subClassOf fma:fma5022 .
+
+# --- bones ------------------------------------------------------------------
+fma:fma16580 a owl:Class ; fma:preferred_name "Hip bone" ; rdfs:subClassOf fma:fma5018 .
+fma:fma24474 a owl:Class ; fma:preferred_name "Femur" ; rdfs:subClassOf fma:fma5018 ; fma:TA_ID "A02.5.04.001" .
+fma:fma24477 a owl:Class ; fma:preferred_name "Tibia" ; rdfs:subClassOf fma:fma5018 .
+
+# --- joints -----------------------------------------------------------------
+fma:fma24964 a owl:Class ; fma:preferred_name "Hip joint" ; rdfs:subClassOf fma:fma7490 .
+fma:fma24974 a owl:Class ; fma:preferred_name "Knee joint" ; rdfs:subClassOf fma:fma7490 .
+
+# --- muscles ----------------------------------------------------------------
+fma:fma22356 a owl:Class ;
+    fma:preferred_name "Biceps femoris" ;
+    fma:synonym "Biceps femoris muscle" ;
+    fma:TA_ID "A04.7.02.032" ;
+    rdfs:subClassOf fma:fma9001 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:origin ; owl:someValuesFrom fma:fma16580 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:insertion ; owl:someValuesFrom fma:fma24477 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:nerve_supply ; owl:someValuesFrom fma:fma19035 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:regional_part_of ; owl:someValuesFrom fma:fma9001 ] .
+
+fma:fma22357 a owl:Class ;
+    fma:preferred_name "Semitendinosus" ;
+    rdfs:subClassOf fma:fma9001 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:origin ; owl:someValuesFrom fma:fma16580 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:insertion ; owl:someValuesFrom fma:fma24477 ] .
+
+fma:fma22358 a owl:Class ; fma:preferred_name "Semimembranosus" ; rdfs:subClassOf fma:fma9001 .
+
+fma:fma22314 a owl:Class ;
+    fma:preferred_name "Gluteus maximus" ;
+    rdfs:subClassOf fma:fma9001 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:origin ; owl:someValuesFrom fma:fma16580 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:insertion ; owl:someValuesFrom fma:fma24474 ] .
+
+fma:fma22315 a owl:Class ;
+    fma:preferred_name "Gluteus medius" ;
+    rdfs:subClassOf fma:fma9001 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:origin ; owl:someValuesFrom fma:fma16580 ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty fma:insertion ; owl:someValuesFrom fma:fma24474 ] .
+
+fma:fma22317 a owl:Class ; fma:preferred_name "Gluteus minimus" ; rdfs:subClassOf fma:fma9001 .
+fma:fma19082 a owl:Class ; fma:preferred_name "Piriformis" ; rdfs:subClassOf fma:fma9001 .
+
+fma:fma9626  a owl:Class ; fma:preferred_name "Trapezius" ; fma:synonym "Trapezius muscle" ; rdfs:subClassOf fma:fma9002 .
+fma:fma32519 a owl:Class ; fma:preferred_name "Levator scapulae" ; rdfs:subClassOf fma:fma9002 .
+fma:fma13710 a owl:Class ; fma:preferred_name "Sternocleidomastoid" ; rdfs:subClassOf fma:fma9002 .
+fma:fma13379 a owl:Class ; fma:preferred_name "Rhomboid major" ; rdfs:subClassOf fma:fma9002 .
+
+# --- referenced but outside the MSK roots -------------------------------------
+fma:fma19035 a owl:Class ; fma:preferred_name "Tibial nerve" .

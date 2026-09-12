@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Build pipeline outputs (regenerate with `anatomy-build`)
+data/raw/
+data/cache/
+data/bundle/
+
+# Frontend
+web/node_modules/
+web/dist/

@@ -1,0 +1,68 @@
+# free-exercise-db muscle groups -> FMA IDs. `expect_name` must match the FMA preferred name
+# or a synonym (case-insensitive substring); see mapping/README.md.
+abdominals:
+  - { id: "FMA:9628",  expect_name: "rectus abdominis" }
+  - { id: "FMA:13335", expect_name: "external oblique" }
+  - { id: "FMA:13890", expect_name: "internal oblique" }
+  - { id: "FMA:15570", expect_name: "transversus abdominis" }
+abductors:
+  - { id: "FMA:22315", expect_name: "gluteus medius" }
+  - { id: "FMA:22317", expect_name: "gluteus minimus" }
+  - { id: "FMA:22423", expect_name: "tensor fasciae latae" }
+adductors:
+  - { id: "FMA:22441", expect_name: "adductor longus" }
+  - { id: "FMA:22442", expect_name: "adductor brevis" }
+  - { id: "FMA:22443", expect_name: "adductor magnus" }
+  - { id: "FMA:22440", expect_name: "pectineus" }
+  - { id: "FMA:22355", expect_name: "gracilis" }
+biceps:
+  - { id: "FMA:37670", expect_name: "biceps brachii" }
+  - { id: "FMA:37664", expect_name: "brachialis" }
+calves:
+  - { id: "FMA:22541", expect_name: "gastrocnemius" }
+  - { id: "FMA:22542", expect_name: "soleus" }
+chest:
+  - { id: "FMA:9627",  expect_name: "pectoralis major" }
+  - { id: "FMA:13109", expect_name: "pectoralis minor" }
+forearms:
+  - { id: "FMA:38485", expect_name: "brachioradialis" }
+  - { id: "FMA:38459", expect_name: "flexor carpi radialis" }
+  - { id: "FMA:38468", expect_name: "flexor carpi ulnaris" }
+  - { id: "FMA:38494", expect_name: "extensor carpi radialis longus" }
+  - { id: "FMA:38506", expect_name: "extensor carpi ulnaris" }
+glutes:
+  - { id: "FMA:22314", expect_name: "gluteus maximus" }
+  - { id: "FMA:22315", expect_name: "gluteus medius" }
+hamstrings:
+  - { id: "FMA:22356", expect_name: "biceps femoris" }
+  - { id: "FMA:22357", expect_name: "semitendinosus" }
+  - { id: "FMA:22358", expect_name: "semimembranosus" }
+lats:
+  - { id: "FMA:13357", expect_name: "latissimus dorsi" }
+lower back:
+  - { id: "FMA:71302", expect_name: "erector spinae" }
+  - { id: "FMA:13110", expect_name: "quadratus lumborum" }
+  - { id: "FMA:22553", expect_name: "multifidus" }
+middle back:
+  - { id: "FMA:13379", expect_name: "rhomboid major" }
+  - { id: "FMA:13380", expect_name: "rhomboid minor" }
+  - { id: "FMA:9626",  expect_name: "trapezius" }
+neck:
+  - { id: "FMA:13710", expect_name: "sternocleidomastoid" }
+  - { id: "FMA:32519", expect_name: "levator scapulae" }
+  - { id: "FMA:22648", expect_name: "splenius capitis" }
+quadriceps:
+  - { id: "FMA:22430", expect_name: "rectus femoris" }
+  - { id: "FMA:22431", expect_name: "vastus lateralis" }
+  - { id: "FMA:22432", expect_name: "vastus medialis" }
+  - { id: "FMA:22433", expect_name: "vastus intermedius" }
+shoulders:
+  - { id: "FMA:32521", expect_name: "deltoid" }
+  - { id: "FMA:9629",  expect_name: "supraspinatus" }
+  - { id: "FMA:32546", expect_name: "infraspinatus" }
+  - { id: "FMA:32550", expect_name: "teres minor" }
+  - { id: "FMA:13413", expect_name: "subscapularis" }
+traps:
+  - { id: "FMA:9626",  expect_name: "trapezius" }
+triceps:
+  - { id: "FMA:37688", expect_name: "triceps brachii" }
