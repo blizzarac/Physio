@@ -51,7 +51,7 @@ Open data provides the anatomy and exercise layers. Pain and mobilization conten
 
 ## 4. Canonical identifier
 
-Every entity in every layer resolves to an **FMA ID** (e.g. `FMA:22356` = biceps brachii). Reasons:
+Every entity in every layer resolves to an **FMA ID** (e.g. `FMA:22356` = biceps femoris). Reasons:
 
 - BodyParts3D meshes are already labeled with FMA IDs.
 - FMA carries the richest relational data.

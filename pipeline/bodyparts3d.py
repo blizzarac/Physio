@@ -78,7 +78,8 @@ def convert_mesh(fma_id: str, obj_path: Path, out_dir: Path, max_triangles: int)
     centroid = tuple(float(x) for x in np.asarray(mesh.bounding_box.centroid))
     rel = f"{fma_id.replace(':', '')}.glb"
     out_dir.mkdir(parents=True, exist_ok=True)
-    mesh.export(str(out_dir / rel), file_type="glb")
+    # Vertex normals are required for lit rendering; without them three.js produces NaN lighting.
+    mesh.export(str(out_dir / rel), file_type="glb", include_normals=True)
     return MeshInfo(fma_id=fma_id, mesh_ref=rel, centroid=centroid, triangles=len(mesh.faces))
 
 

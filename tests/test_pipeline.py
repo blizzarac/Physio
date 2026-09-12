@@ -54,7 +54,8 @@ def test_wrong_root_name_is_rejected():
 def test_full_build_writes_bundle(built_bundle):
     cfg = built_bundle
     assert cfg.db_path.exists()
-    assert (cfg.meshes_dir / "FMA22356.glb").exists()
+    glb = (cfg.meshes_dir / "FMA22356.glb").read_bytes()
+    assert b"NORMAL" in glb, "GLB must carry vertex normals for lit rendering"
     report = json.loads((cfg.bundle_dir / "build_report.json").read_text())
     assert report["with_mesh"] == 2
     assert report["exercises"] == 2
