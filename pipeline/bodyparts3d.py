@@ -73,7 +73,9 @@ def convert_mesh(fma_id: str, obj_path: Path, out_dir: Path, max_triangles: int)
         log.warning("%s: empty or unsupported mesh %s", fma_id, obj_path)
         return None
     mesh = _decimate(loaded, max_triangles)
-    # BodyParts3D is in millimetres with the body's origin near the pelvis; glTF is metres.
+    # BodyParts3D is in millimetres, Z-up (superior = +Z, anterior = -Y). glTF is metres, Y-up
+    # with the viewer looking down -Z, so rotate -90° about X: (x, y, z) -> (x, z, -y).
+    mesh.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, (1, 0, 0)))
     mesh.apply_scale(0.001)
     centroid = tuple(float(x) for x in np.asarray(mesh.bounding_box.centroid))
     rel = f"{fma_id.replace(':', '')}.glb"

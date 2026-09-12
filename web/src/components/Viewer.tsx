@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -6,6 +6,19 @@ import * as THREE from "three";
 import { api, type StructureSummary } from "../api";
 import { useStore } from "../store";
 import { StructureMesh, type Tint } from "./StructureMesh";
+import { SceneSetup, type SceneBounds } from "../three/Scene";
+
+function boundsOf(structures: StructureSummary[]): SceneBounds {
+  const pts = structures.map((s) => s.centroid).filter((c): c is [number, number, number] => !!c);
+  if (pts.length === 0) return { center: new THREE.Vector3(0, 0, 0), radius: 1, minY: -1 };
+  const box = new THREE.Box3();
+  for (const p of pts) box.expandByPoint(new THREE.Vector3(...p));
+  const center = box.getCenter(new THREE.Vector3());
+  // centroids underestimate the extent; pad by a share of the largest span
+  const size = box.getSize(new THREE.Vector3());
+  const radius = Math.max(size.x, size.y, size.z) * 0.6 + 0.15;
+  return { center, radius, minY: box.min.y - Math.max(size.y * 0.25, 0.1) };
+}
 
 function tintFor(id: string, h: ReturnType<typeof useStore.getState>["highlights"], hovered: string | null): Tint {
   if (h.selected === id) return "selected";
@@ -50,6 +63,8 @@ export function Viewer() {
   const hovered = useStore((s) => s.hoveredId);
   const select = useStore((s) => s.select);
   const hover = useStore((s) => s.hover);
+  const xray = useStore((s) => s.xray);
+  const effects = useStore((s) => s.effects);
   const controls = useRef<OrbitControlsImpl>(null);
 
   useEffect(() => {
@@ -57,21 +72,28 @@ export function Viewer() {
   }, []);
 
   const visible = structures.filter((s) => (layers as Record<string, boolean>)[s.type] ?? true);
+  const bounds = useMemo(() => boundsOf(structures), [structures]);
   const hoveredName = structures.find((s) => s.id === hovered)?.name;
 
   return (
     <div className="relative h-full w-full">
-      <Canvas camera={{ position: [0, 0.2, 2.2], fov: 45, near: 0.01, far: 50 }} onPointerMissed={() => select(null)}>
-        <color attach="background" args={["#0b0b0d"]} />
-        <hemisphereLight intensity={0.6} groundColor="#222" />
-        <directionalLight position={[2, 4, 3]} intensity={1.2} />
-        <directionalLight position={[-3, -1, -2]} intensity={0.4} />
+      <Canvas
+        shadows
+        dpr={[1, 2]}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+        camera={{ position: [0, 0.2, 2.2], fov: 40, near: 0.01, far: 50 }}
+        onPointerMissed={() => select(null)}
+      >
+        <color attach="background" args={["#141416"]} />
+        <fog attach="fog" args={["#141416", bounds.radius * 6, bounds.radius * 14]} />
+        <SceneSetup bounds={bounds} effects={effects} />
         <Suspense fallback={<Html center className="text-neutral-400">loading meshes…</Html>}>
           {visible.map((s) => (
             <StructureMesh
               key={s.id}
               structure={s}
               tint={tintFor(s.id, highlights, hovered)}
+              xray={xray}
               onSelect={select}
               onHover={hover}
             />

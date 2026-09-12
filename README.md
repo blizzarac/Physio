@@ -78,6 +78,19 @@ mkdir -p /tmp/bp3d
 ANATOMY_CONTENT_DIR=tests/fixtures/content .venv/bin/anatomy-api
 ```
 
+## Rendering
+
+The viewer is physically based and fully offline: image-based lighting from three.js'
+procedural room environment, ACES tone mapping, a shadow-casting key light with fill and
+rim lights, a contact shadow under the model, ambient occlusion (N8AO) and SMAA. Each
+tissue type has its own `MeshPhysicalMaterial` preset in `web/src/three/anatomyMaterial.ts`
+(clearcoat sheen on muscle, matte ivory bone, glossy cartilage), extended by a small
+shader that adds fibre striations along each mesh's principal axis and low-frequency
+mottling, all computed from world position since BodyParts3D meshes have no UVs.
+Selection and relation highlights tint the base colour slightly and add a Fresnel rim
+glow so structures keep their shading. Toggles under the viewer switch see-through
+muscles and ambient occlusion on and off.
+
 ## Authoring content
 
 Add a Markdown file under `content/pain/` or `content/mobilization/` with YAML
@@ -98,7 +111,7 @@ cd web && npm run typecheck
 
 | Phase (design doc §10) | State |
 |---|---|
-| 1 — Anatomy viewer | Pipeline, API, viewer, picking, layers, search, deep links implemented. Not yet run against the full FMA/BodyParts3D export; the FMA IDs in `mapping/` still need that first `validate` run. Picking is raycast-based; GPU ID picking is a later optimisation. |
+| 1 — Anatomy viewer | Pipeline, API, viewer, picking, layers, search, deep links implemented. Physically based rendering with per-tissue materials, shadows and ambient occlusion. Not yet run against the full FMA/BodyParts3D export; the FMA IDs in `mapping/` still need that first `validate` run. Picking is raycast-based; GPU ID picking is a later optimisation. |
 | 2 — Exercises | free-exercise-db import, mapping table, filters and reverse highlighting implemented. |
 | 3 — Pain and mobilization | Schema, validation, hot reload and an initial set of entries implemented. Referral "painting" currently tints the region meshes; a skin-surface heat overlay is still open. |
 | 4 — Refinement | Not started (OpenSim paths, ROM overlay, multilingual names). |

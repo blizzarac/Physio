@@ -28,12 +28,16 @@ interface State {
   highlights: Highlights;
   cameraTarget: [number, number, number] | null;
   tab: "anatomy" | "exercises" | "pain" | "mobilization";
+  xray: boolean;     // see-through muscles so bones and deep structures show
+  effects: boolean;  // ambient occlusion + anti-aliasing post-processing
   select: (id: string | null) => void;
   hover: (id: string | null) => void;
   toggleLayer: (layer: Layer) => void;
   setHighlights: (patch: Partial<Highlights>) => void;
   flyTo: (target: [number, number, number] | null) => void;
   setTab: (tab: State["tab"]) => void;
+  toggleXray: () => void;
+  toggleEffects: () => void;
 }
 
 const emptyHighlights = (): Highlights => ({
@@ -52,10 +56,14 @@ export const useStore = create<State>((set) => ({
   highlights: emptyHighlights(),
   cameraTarget: null,
   tab: "anatomy",
+  xray: false,
+  effects: true,
   select: (id) => set({ selectedId: id, highlights: { ...emptyHighlights(), selected: id } }),
   hover: (id) => set({ hoveredId: id }),
   toggleLayer: (layer) => set((s) => ({ layers: { ...s.layers, [layer]: !s.layers[layer] } })),
   setHighlights: (patch) => set((s) => ({ highlights: { ...s.highlights, ...patch } })),
   flyTo: (target) => set({ cameraTarget: target }),
   setTab: (tab) => set({ tab }),
+  toggleXray: () => set((s) => ({ xray: !s.xray })),
+  toggleEffects: () => set((s) => ({ effects: !s.effects })),
 }));
