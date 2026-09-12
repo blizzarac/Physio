@@ -52,3 +52,7 @@ def fetch_all(cfg: BuildConfig, *, fma: bool, uberon: bool, exercises: bool, bp3
             log.info("extracting %s", archive)
             with zipfile.ZipFile(archive) as zf:
                 zf.extractall(target)
+        _download(
+            cfg.sources.bodyparts3d_element_parts,
+            raw / "bodyparts3d" / "isa_element_parts.txt",
+        )

@@ -7,7 +7,7 @@ export type StructureType =
   | "muscle" | "tendon" | "ligament" | "bone" | "joint" | "fascia" | "region";
 
 export interface Attributed { text: string; source: string; license?: string | null; url?: string | null }
-export interface Ref { id: string; name: string | null; source?: string }
+export interface Ref { id: string; name: string | null; source?: string; resolvable?: boolean }
 
 export interface StructureSummary {
   id: string;

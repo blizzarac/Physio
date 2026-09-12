@@ -31,6 +31,30 @@ function tintFor(id: string, h: ReturnType<typeof useStore.getState>["highlights
   return null;
 }
 
+// Frames the camera on the model's actual center once its bounds are known, instead of leaving
+// the orbit pivot at the world origin (which sits near the feet in this dataset's coordinates).
+function InitialFit({
+  bounds,
+  ready,
+  controls,
+}: {
+  bounds: SceneBounds;
+  ready: boolean;
+  controls: React.RefObject<OrbitControlsImpl>;
+}) {
+  const { camera } = useThree();
+  const fitted = useRef(false);
+  useEffect(() => {
+    if (!ready || fitted.current || !controls.current) return;
+    fitted.current = true;
+    const offset = new THREE.Vector3(0, bounds.radius * 0.15, bounds.radius * 1.6);
+    camera.position.copy(bounds.center).add(offset);
+    controls.current.target.copy(bounds.center);
+    controls.current.update();
+  }, [ready, bounds, camera, controls]);
+  return null;
+}
+
 // Smoothly re-targets the orbit controls when the store's cameraTarget changes (search jump).
 function CameraRig({ controls }: { controls: React.RefObject<OrbitControlsImpl> }) {
   const target = useStore((s) => s.cameraTarget);
@@ -100,6 +124,7 @@ export function Viewer() {
           ))}
         </Suspense>
         <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={0.1} />
+        <InitialFit bounds={bounds} ready={structures.length > 0} controls={controls} />
         <CameraRig controls={controls} />
       </Canvas>
       {hoveredName && (

@@ -4,7 +4,7 @@ id: pp-upper-trapezius-tp1
 title: Upper trapezius trigger point (TrP1)
 structure: FMA:9626
 kind: trigger_point
-referral_regions: [FMA:32519, FMA:13710]
+referral_regions: [FMA:32519, FMA:13407]
 common_causes:
   - Sustained shoulder elevation (phone between ear and shoulder, high desk)
   - Carrying loads on one shoulder

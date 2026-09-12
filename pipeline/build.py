@@ -152,8 +152,12 @@ def build(cfg: BuildConfig, *, write: bool = True) -> BuildReport:
         if not obj_dir.exists():
             report.warnings.append(f"BodyParts3D directory not found: {obj_dir}; no meshes")
         else:
+            element_parts_path = (
+                cfg.bodyparts3d_element_parts_file
+                or cfg.raw_dir / "bodyparts3d" / "isa_element_parts.txt"
+            )
             infos = bodyparts3d.convert_all(
-                obj_dir, set(structures), cfg.meshes_dir, cfg.max_triangles
+                obj_dir, set(structures), cfg.meshes_dir, cfg.max_triangles, element_parts_path
             )
             for fma_id, info in infos.items():
                 structures[fma_id].geometry = Geometry(

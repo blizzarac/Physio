@@ -3,7 +3,7 @@ type: mobilization
 id: mob-gluteus-medius-ball
 title: Gluteus medius ball release
 targets: [FMA:22315, FMA:22317]
-joint: FMA:24964
+joint: FMA:35178
 kind: self_myofascial
 steps:
   - Stand with your side to a wall and place a firm ball between the wall and the area just below the iliac crest.

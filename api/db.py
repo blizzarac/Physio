@@ -69,7 +69,13 @@ class Bundle:
         }
 
     def relations(self, structure_id: str) -> dict[str, list[dict[str, Any]]]:
-        """Outgoing relations grouped by predicate, each target labelled."""
+        """Outgoing relations grouped by predicate, each target labelled.
+
+        A relation's object may be a structure outside the MSK subset (e.g. an innervating
+        nerve, or a regional grouping FMA classifies outside our roots) that only has a display
+        label, not a full page; ``resolvable`` tells the frontend whether it's safe to link to.
+        """
+        ids = self.structure_ids()
         out: dict[str, list[dict[str, Any]]] = {}
         for r in self._rows(
             "SELECT predicate, object, source FROM relations WHERE subject=? "
@@ -77,12 +83,18 @@ class Bundle:
             (structure_id,),
         ):
             out.setdefault(r["predicate"], []).append(
-                {"id": r["object"], "name": self.label(r["object"]), "source": r["source"]}
+                {
+                    "id": r["object"],
+                    "name": self.label(r["object"]),
+                    "source": r["source"],
+                    "resolvable": r["object"] in ids,
+                }
             )
         return out
 
     def incoming(self, structure_id: str) -> dict[str, list[dict[str, Any]]]:
         """Structures that point at this one (e.g. muscles originating on a bone)."""
+        ids = self.structure_ids()
         out: dict[str, list[dict[str, Any]]] = {}
         for r in self._rows(
             "SELECT predicate, subject, source FROM relations WHERE object=? "
@@ -90,7 +102,12 @@ class Bundle:
             (structure_id,),
         ):
             out.setdefault(r["predicate"], []).append(
-                {"id": r["subject"], "name": self.label(r["subject"]), "source": r["source"]}
+                {
+                    "id": r["subject"],
+                    "name": self.label(r["subject"]),
+                    "source": r["source"],
+                    "resolvable": r["subject"] in ids,
+                }
             )
         return out
 

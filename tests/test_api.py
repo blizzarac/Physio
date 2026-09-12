@@ -21,8 +21,15 @@ def test_structure_endpoint(client: TestClient):
     s = r.json()
     assert s["id"] == "FMA:22356" and s["names"]["preferred"] == "Biceps femoris"
     assert s["geometry"]["mesh_url"] == "/static/meshes/FMA22356.glb"
-    assert s["relations"]["origin"][0] == {"id": "FMA:16580", "name": "Hip bone", "source": "fma"}
+    assert s["relations"]["origin"][0] == {
+        "id": "FMA:16580",
+        "name": "Hip bone",
+        "source": "fma",
+        "resolvable": True,
+    }
+    # innervation targets (nerves) sit outside the MSK subset: labelled, but no page to link to
     assert s["relations"]["innervation"][0]["name"] == "Tibial nerve"
+    assert s["relations"]["innervation"][0]["resolvable"] is False
     assert s["counts"] == {"exercises": 1, "pain_patterns": 0, "mobilizations": 0}
     assert client.get("/structures/FMA:1").status_code == 404
     assert client.get("/structures/nonsense").status_code == 400

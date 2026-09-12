@@ -26,6 +26,12 @@ class SourceUrls:
     bodyparts3d_obj: str = (
         "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip"
     )
+    # Maps FMA concept ID -> element file ID(s); the OBJ files in bodyparts3d_obj are named by
+    # element file ID (e.g. FJ1813.obj), not FMA ID, and a compound structure can be made of
+    # several element files that must be merged into one mesh.
+    bodyparts3d_element_parts: str = (
+        "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_element_parts.txt"
+    )
     wikidata_sparql: str = "https://query.wikidata.org/sparql"
 
 
@@ -40,9 +46,9 @@ class MskRoots:
     muscle: tuple[str, str] = ("FMA:5022", "Muscle organ")
     bone: tuple[str, str] = ("FMA:5018", "Bone organ")
     joint: tuple[str, str] = ("FMA:7490", "Joint")
-    ligament: tuple[str, str] = ("FMA:5027", "Ligament organ")
+    ligament: tuple[str, str] = ("FMA:21496", "Ligament organ")
     tendon: tuple[str, str] = ("FMA:9721", "Tendon")
-    fascia: tuple[str, str] = ("FMA:5024", "Fascia")
+    fascia: tuple[str, str] = ("FMA:321912", "Fascia")
 
     def items(self):
         return [(name, fma_id, expected) for name, (fma_id, expected) in self.__dict__.items()]
@@ -63,6 +69,7 @@ class BuildConfig:
     uberon_file: Path | None = None
     exercises_file: Path | None = None
     bodyparts3d_dir: Path | None = None
+    bodyparts3d_element_parts_file: Path | None = None
     wikidata_file: Path | None = None
     skip_meshes: bool = False
 

@@ -3,7 +3,7 @@ type: mobilization
 id: mob-piriformis-figure-four
 title: Supine figure-four piriformis stretch
 targets: [FMA:19082]
-joint: FMA:24964
+joint: FMA:35178
 kind: stretch
 steps:
   - Lie on your back with both knees bent and feet flat.
