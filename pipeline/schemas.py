@@ -59,6 +59,8 @@ class Relation(BaseModel):
 class Geometry(BaseModel):
     mesh_ref: str | None = None  # relative path under static/meshes/
     centroid: tuple[float, float, float] | None = None
+    bbox_min: tuple[float, float, float] | None = None
+    bbox_max: tuple[float, float, float] | None = None
     triangles: int | None = None
     path: list[tuple[float, float, float]] = Field(default_factory=list)  # OpenSim, optional
 

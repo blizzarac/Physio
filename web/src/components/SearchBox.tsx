@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type SearchHit } from "../api";
-import { useStore } from "../store";
 
 // Name / synonym / Latin search; picking a hit opens the structure and jumps the camera to its
 // centroid when it has a mesh (design doc §8).
@@ -9,7 +8,6 @@ export function SearchBox() {
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [open, setOpen] = useState(false);
-  const flyTo = useStore((s) => s.flyTo);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +22,7 @@ export function SearchBox() {
   const pick = (h: SearchHit) => {
     setOpen(false);
     setQ("");
-    navigate(`/s/${h.id}`);
-    if (h.centroid) flyTo(h.centroid);
+    navigate(`/s/${h.id}`); // selection framing happens in the viewer
   };
 
   return (

@@ -25,6 +25,8 @@ CREATE TABLE structures (
     actions       TEXT NOT NULL,  -- JSON list of Attributed
     mesh_ref      TEXT,
     centroid_x    REAL, centroid_y REAL, centroid_z REAL,
+    bbox_min_x    REAL, bbox_min_y REAL, bbox_min_z REAL,
+    bbox_max_x    REAL, bbox_max_y REAL, bbox_max_z REAL,
     triangles     INTEGER,
     path          TEXT            -- JSON list of [x,y,z] or NULL
 );
@@ -97,8 +99,10 @@ def write_bundle(
         for s in structures.values():
             g = s.geometry
             cx, cy, cz = g.centroid if g.centroid else (None, None, None)
+            bmin = g.bbox_min if g.bbox_min else (None, None, None)
+            bmax = g.bbox_max if g.bbox_max else (None, None, None)
             con.execute(
-                "INSERT INTO structures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO structures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
                     s.id,
                     s.type,
@@ -111,6 +115,8 @@ def write_bundle(
                     cx,
                     cy,
                     cz,
+                    *bmin,
+                    *bmax,
                     g.triangles,
                     json.dumps(g.path) if g.path else None,
                 ),

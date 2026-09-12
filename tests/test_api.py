@@ -37,6 +37,23 @@ def test_structure_endpoint(client: TestClient):
     assert client.get(s["geometry"]["mesh_url"]).status_code == 200
 
 
+def test_bbox_and_hierarchy(client: TestClient):
+    s = client.get("/structures/FMA:22356").json()
+    assert s["geometry"]["bbox"]["min"][0] == pytest.approx(-0.05)
+    listed = {x["id"]: x for x in client.get("/structures", params={"with_mesh": True}).json()}
+    assert listed["FMA:22356"]["bbox"]["max"][1] == pytest.approx(0.02)
+
+    nodes = {n["id"]: n for n in client.get("/hierarchy").json()}
+    assert nodes["FMA:22356"]["parent"] == "FMA:45959"  # compartment beats "Muscle of lower limb"
+    assert nodes["FMA:45959"]["parent"] == "FMA:24966"
+    assert nodes["FMA:24966"]["parent"] == "FMA:24875"
+    assert nodes["FMA:24875"]["parent"] == "FMA:20394"
+    assert nodes["FMA:20394"]["parent"] is None and nodes["FMA:20394"]["type"] == "region"
+    assert nodes["FMA:22356"]["has_mesh"] is True and nodes["FMA:45959"]["has_mesh"] is False
+    # region pages resolve, so breadcrumb links are safe
+    assert client.get("/structures/FMA:24966").json()["names"]["preferred"] == "Thigh"
+
+
 def test_related_and_incoming(client: TestClient):
     r = client.get("/structures/FMA:22356/related").json()
     assert [a["id"] for a in r["antagonists"]] == ["FMA:22314"]

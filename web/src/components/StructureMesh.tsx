@@ -4,7 +4,7 @@ import * as THREE from "three";
 import type { ThreeEvent } from "@react-three/fiber";
 import type { StructureSummary } from "../api";
 import { api } from "../api";
-import { createAnatomyMaterial, principalAxis } from "../three/anatomyMaterial";
+import { TISSUE, createAnatomyMaterial, principalAxis } from "../three/anatomyMaterial";
 
 export type Tint = "selected" | "hovered" | "referral" | "antagonist" | "synergist" | "exercise" | "attachment" | null;
 
@@ -23,14 +23,16 @@ interface Props {
   structure: StructureSummary;
   tint: Tint;
   xray: boolean;
+  dimmed: boolean;
   onSelect: (id: string) => void;
+  onFocus: (id: string) => void;
   onHover: (id: string | null) => void;
 }
 
 // One draw call per structure; each GLB comes from the bundle (one file per FMA ID) so the
 // viewer can load lazily by layer. Picking is raycast-based via r3f pointer events; GPU ID
 // picking (design doc §8) can replace it once the full-body mesh count makes raycasting slow.
-export function StructureMesh({ structure, tint, xray, onSelect, onHover }: Props) {
+export function StructureMesh({ structure, tint, xray, dimmed, onSelect, onFocus, onHover }: Props) {
   const gltf = useGLTF(api.meshUrl(structure.mesh_url!));
   const geometry = useMemo(() => {
     const geoms: THREE.BufferGeometry[] = [];
@@ -70,11 +72,13 @@ export function StructureMesh({ structure, tint, xray, onSelect, onHover }: Prop
 
   useEffect(() => {
     const seeThrough = xray && structure.type === "muscle" && !tint;
-    material.transparent = seeThrough || material.opacity < 1;
-    material.opacity = seeThrough ? 0.35 : 1;
-    material.depthWrite = !seeThrough;
+    const base = TISSUE[structure.type]?.opacity ?? 1;
+    const opacity = dimmed ? 0.1 : seeThrough ? 0.35 : base;
+    material.transparent = opacity < 1;
+    material.opacity = opacity;
+    material.depthWrite = opacity >= 1;
     material.needsUpdate = true;
-  }, [xray, tint, material, structure.type]);
+  }, [xray, dimmed, tint, material, structure.type]);
 
   if (!geometry) return null;
   return (
@@ -86,6 +90,10 @@ export function StructureMesh({ structure, tint, xray, onSelect, onHover }: Prop
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
         onSelect(structure.id);
+      }}
+      onDoubleClick={(e: ThreeEvent<MouseEvent>) => {
+        e.stopPropagation();
+        onFocus(structure.id);
       }}
       onPointerOver={(e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();

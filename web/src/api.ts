@@ -9,12 +9,23 @@ export type StructureType =
 export interface Attributed { text: string; source: string; license?: string | null; url?: string | null }
 export interface Ref { id: string; name: string | null; source?: string; resolvable?: boolean }
 
+export interface BBox { min: [number, number, number]; max: [number, number, number] }
+
 export interface StructureSummary {
   id: string;
   type: StructureType;
   name: string;
   mesh_url: string | null;
   centroid: [number, number, number] | null;
+  bbox: BBox | null;
+}
+
+export interface HierarchyNode {
+  id: string;
+  name: string;
+  type: StructureType;
+  parent: string | null;
+  has_mesh: boolean;
 }
 
 export interface Structure {
@@ -28,6 +39,7 @@ export interface Structure {
     mesh_ref: string | null;
     mesh_url: string | null;
     centroid: [number, number, number] | null;
+    bbox: BBox | null;
     triangles: number | null;
     path: [number, number, number][];
   };
@@ -117,6 +129,7 @@ async function get<T>(path: string, params?: Record<string, string | number | bo
 export const api = {
   structures: (withMesh = true) => get<StructureSummary[]>("/structures", { with_mesh: withMesh }),
   structure: (id: string) => get<Structure>(`/structures/${encodeURIComponent(id)}`),
+  hierarchy: () => get<HierarchyNode[]>("/hierarchy"),
   related: (id: string) => get<Related>(`/structures/${encodeURIComponent(id)}/related`),
   search: (q: string) => get<SearchHit[]>("/search", { q, limit: 15 }),
   exercises: (params: { structure?: string; type?: string; equipment?: string; level?: string; role?: string; limit?: number; offset?: number }) =>

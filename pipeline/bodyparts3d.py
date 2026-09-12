@@ -33,6 +33,8 @@ class MeshInfo:
     fma_id: str
     mesh_ref: str  # path relative to the bundle's static/meshes directory
     centroid: tuple[float, float, float]
+    bbox_min: tuple[float, float, float]
+    bbox_max: tuple[float, float, float]
     triangles: int
 
 
@@ -109,11 +111,19 @@ def convert_mesh(
     mesh.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, (1, 0, 0)))
     mesh.apply_scale(0.001)
     centroid = tuple(float(x) for x in np.asarray(mesh.bounding_box.centroid))
+    bmin, bmax = (tuple(float(x) for x in row) for row in np.asarray(mesh.bounds))
     rel = f"{fma_id.replace(':', '')}.glb"
     out_dir.mkdir(parents=True, exist_ok=True)
     # Vertex normals are required for lit rendering; without them three.js produces NaN lighting.
     mesh.export(str(out_dir / rel), file_type="glb", include_normals=True)
-    return MeshInfo(fma_id=fma_id, mesh_ref=rel, centroid=centroid, triangles=len(mesh.faces))
+    return MeshInfo(
+        fma_id=fma_id,
+        mesh_ref=rel,
+        centroid=centroid,
+        bbox_min=bmin,
+        bbox_max=bmax,
+        triangles=len(mesh.faces),
+    )
 
 
 def convert_all(

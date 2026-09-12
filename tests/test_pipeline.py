@@ -42,6 +42,21 @@ def test_fma_subset_extraction():
     # nerve is outside the roots but still gets a label
     assert subset.labels["FMA:19035"] == "Tibial nerve"
     assert "FMA:19035" not in subset.structures
+    # regional chain walked upward: compartment -> thigh -> lower limb -> body
+    for rid, name in [
+        ("FMA:45959", "Posterior compartment of thigh"),
+        ("FMA:24966", "Thigh"),
+        ("FMA:24875", "Lower limb"),
+        ("FMA:20394", "Human body"),
+    ]:
+        assert (
+            subset.structures[rid].type == "region"
+            and subset.structures[rid].names.preferred == name
+        )
+    assert ("part_of", "FMA:45959") in preds
+    assert ("FMA:45959", "part_of", "FMA:24966") in {
+        (r.subject, r.predicate, r.object) for r in subset.relations
+    }
 
 
 def test_wrong_root_name_is_rejected():
@@ -68,6 +83,11 @@ def test_full_build_writes_bundle(built_bundle):
     assert row[0] == "muscle" and row[1] == "Biceps femoris"
     assert "hamstring" in json.loads(row[2])["text"]
     assert row[3] == "FMA22356.glb" and row[4] == 12
+    bbox = con.execute(
+        "SELECT bbox_min_x, bbox_max_x, bbox_min_y, bbox_max_y FROM structures WHERE id='FMA:22356'"
+    ).fetchone()
+    assert bbox[0] == pytest.approx(-0.05) and bbox[1] == pytest.approx(0.05)
+    assert bbox[3] - bbox[2] == pytest.approx(0.04)
     # uberon synonym merged into the names table
     assert con.execute(
         "SELECT 1 FROM names WHERE structure_id='FMA:22356' AND name='musculus biceps femoris'"

@@ -38,6 +38,15 @@ class Bundle:
     def structure_ids(self) -> set[str]:
         return {r["id"] for r in self._rows("SELECT id FROM structures")}
 
+    @staticmethod
+    def _bbox(row: sqlite3.Row) -> dict[str, list[float]] | None:
+        if row["bbox_min_x"] is None:
+            return None
+        return {
+            "min": [row["bbox_min_x"], row["bbox_min_y"], row["bbox_min_z"]],
+            "max": [row["bbox_max_x"], row["bbox_max_y"], row["bbox_max_z"]],
+        }
+
     # -- structures ------------------------------------------------------------------------
     def structure(self, structure_id: str) -> dict[str, Any] | None:
         row = self.con.execute("SELECT * FROM structures WHERE id=?", (structure_id,)).fetchone()
@@ -63,6 +72,7 @@ class Bundle:
                 "centroid": [row["centroid_x"], row["centroid_y"], row["centroid_z"]]
                 if row["centroid_x"] is not None
                 else None,
+                "bbox": self._bbox(row),
                 "triangles": row["triangles"],
                 "path": json.loads(row["path"]) if row["path"] else [],
             },
@@ -112,10 +122,7 @@ class Bundle:
         return out
 
     def list_structures(self, type_: str | None, with_mesh: bool) -> list[dict[str, Any]]:
-        sql = (
-            "SELECT id, type, preferred, mesh_ref, centroid_x, centroid_y, centroid_z "
-            "FROM structures"
-        )
+        sql = "SELECT * FROM structures"
         clauses, params = [], []
         if type_:
             clauses.append("type=?")
@@ -133,9 +140,53 @@ class Bundle:
                 "centroid": [r["centroid_x"], r["centroid_y"], r["centroid_z"]]
                 if r["centroid_x"] is not None
                 else None,
+                "bbox": self._bbox(r),
             }
             for r in self._rows(sql + " ORDER BY preferred", tuple(params))
         ]
+
+    def hierarchy(self) -> list[dict[str, Any]]:
+        """Every structure with one chosen ``part_of`` parent, for a navigation tree.
+
+        FMA gives many structures several parents (regional and constitutional). The most
+        specific one is chosen: the parent with the longest ancestor chain of its own.
+        Parents outside the bundle are dropped so the tree is fully navigable.
+        """
+        rows = self._rows("SELECT id, type, preferred, mesh_ref FROM structures")
+        known = {r["id"] for r in rows}
+        parents: dict[str, list[str]] = {}
+        for r in self._rows(
+            "SELECT subject, object FROM relations WHERE predicate='part_of' ORDER BY object"
+        ):
+            if r["object"] in known and r["subject"] in known:
+                parents.setdefault(r["subject"], []).append(r["object"])
+
+        depth_cache: dict[str, int] = {}
+
+        def depth(node: str, trail: frozenset[str] = frozenset()) -> int:
+            if node in depth_cache:
+                return depth_cache[node]
+            if node in trail:
+                return 0
+            ps = parents.get(node, [])
+            d = 1 + max((depth(p, trail | {node}) for p in ps), default=-1)
+            depth_cache[node] = d
+            return d
+
+        out = []
+        for r in rows:
+            ps = parents.get(r["id"], [])
+            parent = max(ps, key=lambda p: (depth(p), p)) if ps else None
+            out.append(
+                {
+                    "id": r["id"],
+                    "name": r["preferred"],
+                    "type": r["type"],
+                    "parent": parent,
+                    "has_mesh": r["mesh_ref"] is not None,
+                }
+            )
+        return out
 
     def search(self, query: str, limit: int) -> list[dict[str, Any]]:
         tokens = [t for t in query.replace('"', " ").split() if t]

@@ -91,6 +91,22 @@ Selection and relation highlights tint the base colour slightly and add a Fresne
 glow so structures keep their shading. Toggles under the viewer switch see-through
 muscles and ambient occlusion on and off.
 
+## Navigation
+
+- **Selection framing.** Clicking a mesh, picking a search hit, following a chip or a
+  breadcrumb, or opening a deep link frames the camera on that structure using its
+  bounding box (stored in the bundle). Double-click frames directly; `F` re-frames the
+  selection, `Home` resets to the full body, `Esc` deselects, `1`–`5` switch to the
+  front, back, left, right and top views. Camera moves are eased along an arc.
+- **Regions.** `GET /hierarchy` serves every structure with its most specific `part_of`
+  parent; the pipeline walks `regional_part_of` upward from the MSK subset so regions
+  such as thigh and lower limb exist as `region` structures. The "Regions" drawer shows
+  this tree (subtrees without meshes are hidden), the panel header shows the breadcrumb,
+  and the target icon next to a region restricts the viewer to that subtree.
+- **Dim / isolate.** "Dim others" fades everything unrelated to the selection and its
+  highlighted relations; "Isolate" hides it. Layer toggles and the region filter still
+  apply on top.
+
 ## Authoring content
 
 Add a Markdown file under `content/pain/` or `content/mobilization/` with YAML
@@ -111,7 +127,7 @@ cd web && npm run typecheck
 
 | Phase (design doc §10) | State |
 |---|---|
-| 1 — Anatomy viewer | Pipeline, API, viewer, picking, layers, search, deep links implemented. Physically based rendering with per-tissue materials, shadows and ambient occlusion. Not yet run against the full FMA/BodyParts3D export; the FMA IDs in `mapping/` still need that first `validate` run. Picking is raycast-based; GPU ID picking is a later optimisation. |
+| 1 — Anatomy viewer | Pipeline, API, viewer, picking, layers, search, deep links implemented. Physically based rendering with per-tissue materials, shadows and ambient occlusion. Navigation: selection framing, standard views, keyboard shortcuts, region tree with breadcrumb and region filter, dim and isolate modes. Not yet run against the full FMA/BodyParts3D export; the FMA IDs in `mapping/` still need that first `validate` run. Picking is raycast-based; GPU ID picking is a later optimisation. |
 | 2 — Exercises | free-exercise-db import, mapping table, filters and reverse highlighting implemented. |
 | 3 — Pain and mobilization | Schema, validation, hot reload and an initial set of entries implemented. Referral "painting" currently tints the region meshes; a skin-surface heat overlay is still open. |
 | 4 — Refinement | Not started (OpenSim paths, ROM overlay, multilingual names). |

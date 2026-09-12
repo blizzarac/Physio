@@ -171,6 +171,8 @@ def extract_msk_subset(g: Graph, roots: MskRoots) -> FmaSubset:
                 if target_label:
                     subset.labels[target] = target_label
 
+    _add_region_ancestors(g, subset)
+
     # Deduplicate relations while preserving order.
     seen: set[tuple[str, str, str]] = set()
     unique: list[Relation] = []
@@ -182,6 +184,52 @@ def extract_msk_subset(g: Graph, roots: MskRoots) -> FmaSubset:
     subset.relations = unique
     log.info("MSK subset: %d structures, %d relations", len(subset.structures), len(unique))
     return subset
+
+
+REGION_PROPERTIES = (FMA.regional_part_of, FMA.part_of)
+MAX_REGION_DEPTH = 12
+
+
+def _add_region_ancestors(g: Graph, subset: FmaSubset) -> None:
+    """Follow ``regional_part_of`` upward from every subset member and add the regions found
+    (thigh, lower limb, ...) as ``region`` structures so the viewer can navigate a hierarchy.
+    Chains are capped at MAX_REGION_DEPTH; cycles are ignored."""
+    queue: deque[tuple[URIRef, int]] = deque()
+    for fma_id in list(subset.structures):
+        queue.append((URIRef(fma_to_iri(fma_id)), 0))
+    seen: set[URIRef] = set()
+    added = 0
+    while queue:
+        node, depth = queue.popleft()
+        if node in seen or depth > MAX_REGION_DEPTH:
+            continue
+        seen.add(node)
+        child_id = iri_to_fma(str(node))
+        if child_id is None:
+            continue
+        for prop, filler in _restrictions(g, node):
+            if prop not in REGION_PROPERTIES or not isinstance(filler, URIRef):
+                continue
+            parent_id = iri_to_fma(str(filler))
+            if parent_id is None:
+                continue
+            if parent_id not in subset.structures:
+                name = _label(g, filler)
+                if not name:
+                    continue
+                subset.structures[parent_id] = Structure(
+                    id=parent_id,
+                    type="region",
+                    names=Names(preferred=name, synonyms=_synonyms(g, filler)),
+                    ta2=_ta_id(g, filler),
+                )
+                subset.labels[parent_id] = name
+                added += 1
+            subset.relations.append(
+                Relation(subject=child_id, predicate="part_of", object=parent_id)
+            )
+            queue.append((filler, depth + 1))
+    log.info("region hierarchy: added %d region structures", added)
 
 
 def derive_crosses_joint(

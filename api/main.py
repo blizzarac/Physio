@@ -5,6 +5,7 @@ Routes
 GET /structures                 list (filter: type, with_mesh)
 GET /structures/{id}            structure + relations + counts of linked content
 GET /structures/{id}/related    antagonists / synergists / joints / bones for highlighting
+GET /hierarchy                  every structure with its chosen part_of parent (region tree)
 GET /search?q=                  FTS over preferred names, Latin names, synonyms
 GET /exercises                  filter by structure, type, equipment, level
 GET /exercises/{id}
@@ -87,6 +88,11 @@ def create_app(
     @app.get("/structures")
     def list_structures(request: Request, type: str | None = None, with_mesh: bool = False):
         return _bundle(request).list_structures(type, with_mesh)
+
+    @app.get("/hierarchy")
+    def hierarchy(request: Request):
+        """Flat parent list for the region tree; the client derives ancestors and members."""
+        return _bundle(request).hierarchy()
 
     @app.get("/structures/{structure_id}")
     def get_structure(request: Request, structure_id: str):

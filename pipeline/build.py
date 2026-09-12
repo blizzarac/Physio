@@ -161,7 +161,11 @@ def build(cfg: BuildConfig, *, write: bool = True) -> BuildReport:
             )
             for fma_id, info in infos.items():
                 structures[fma_id].geometry = Geometry(
-                    mesh_ref=info.mesh_ref, centroid=info.centroid, triangles=info.triangles
+                    mesh_ref=info.mesh_ref,
+                    centroid=info.centroid,
+                    bbox_min=info.bbox_min,
+                    bbox_max=info.bbox_max,
+                    triangles=info.triangles,
                 )
     report.with_mesh = sum(1 for s in structures.values() if s.geometry.mesh_ref)
 

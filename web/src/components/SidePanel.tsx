@@ -4,6 +4,7 @@ import { useStore } from "../store";
 import { AnatomyTab } from "../tabs/AnatomyTab";
 import { ExercisesTab } from "../tabs/ExercisesTab";
 import { MobilizationTab, PainTab } from "../tabs/ContentTabs";
+import { Breadcrumb } from "./Breadcrumb";
 
 const TABS = [
   { key: "anatomy", label: "Anatomy" },
@@ -37,7 +38,11 @@ export function SidePanel({ structureId }: { structureId: string | null }) {
   if (!structureId) {
     return (
       <div className="p-4 text-sm text-neutral-400">
-        Click a structure in the viewer or search for one to see its anatomy, exercises, pain patterns and mobilizations.
+        Click a structure in the viewer, search for one, or browse the regions to see its anatomy, exercises, pain
+        patterns and mobilizations.
+        <div className="mt-3 text-xs text-neutral-500">
+          Double-click frames a structure · F frame selection · Home reset · Esc deselect · 1–5 standard views
+        </div>
       </div>
     );
   }
@@ -53,6 +58,7 @@ export function SidePanel({ structureId }: { structureId: string | null }) {
   return (
     <div className="flex h-full flex-col">
       <header className="border-b border-neutral-800 p-4">
+        <Breadcrumb id={structure.id} />
         <div className="text-xs uppercase tracking-wide text-neutral-500">{structure.type}</div>
         <h2 className="text-xl font-semibold">{structure.names.preferred}</h2>
       </header>
